@@ -1,0 +1,49 @@
+
+name: Daily Bellhaven CRM Reconciliation
+
+on:
+  schedule:
+    - cron: "0 13 * * *"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run read-only reconciliation
+        env:
+          CRM_API_TOKEN: ${{ secrets.CRM_API_TOKEN }}
+        run: |
+          python daily_pipeline.py
+
+      - name: Save daily review results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bellhaven-daily-review
+          path: |
+            data/bellhaven_locations.json
+            data/bellhaven_locations.csv
+            data/crm_accounts.json
+            data/proposals.json
+          if-no-files-found: warn
+          retention-days: 3

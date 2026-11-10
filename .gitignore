@@ -1,0 +1,31 @@
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+.streamlit/secrets.toml
+
+# Private CRM data and review history
+data/
+
+# Local backups and temporary scripts
+*_backup.py
+matching_before_*.py
+app_backup.py
+fix_*.py
+prepare_manual_fixes.py
+audit_crm_only.py
+
+# Editor and OS files
+.vscode/
+.DS_Store
+Thumbs.db
+
+app copy.py
+check_data.py
+test_api.py
